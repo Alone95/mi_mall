@@ -28,6 +28,12 @@ public class CategoryServiceImpl implements ICategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
 
+    /**
+     * 增加品类节点
+     * @param categoryName
+     * @param parentId
+     * @return
+     */
     @Override
     public ServerResponse addCategory(String categoryName, Integer parentId) {
         if(parentId == null || StringUtils.isBlank(categoryName)){
@@ -46,6 +52,12 @@ public class CategoryServiceImpl implements ICategoryService {
         return ServerResponse.createByErrorMessage("添加品类失败");
     }
 
+    /**
+     * 更新品类
+     * @param categoryId
+     * @param categoryName
+     * @return
+     */
     @Override
     public ServerResponse updateCategoryName(Integer categoryId, String categoryName) {
         if(categoryId == null || StringUtils.isBlank(categoryName)){
@@ -63,6 +75,11 @@ public class CategoryServiceImpl implements ICategoryService {
 
     }
 
+    /**
+     * 获取品类子节点(平级)
+     * @param categoryId
+     * @return
+     */
     @Override
     public ServerResponse<List<Category>> getChildrenParallelCategory(Integer categoryId) {
        List<Category> categoryList = categoryMapper.selectCategoryChildrenByParentId(categoryId);
@@ -91,7 +108,14 @@ public class CategoryServiceImpl implements ICategoryService {
         return  ServerResponse.createBySuccess(categoryIdList);
     }
 
-    //递归算法，算出子节点
+
+
+    /**
+     * 递归算法 算出子节点
+     * @param categorySet
+     * @param categoryId
+     * @return
+     */
     private Set<Category> findChildCategory(Set<Category>categorySet,Integer categoryId){
         Category category = categoryMapper.selectByPrimaryKey(categoryId);
         if (category!=null){
