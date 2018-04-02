@@ -6,6 +6,7 @@ import java.math.BigDecimal;
  * @author alone95
  * @date 2017/12/4
  */
+
 public class BigDecimalUtil {
     private BigDecimalUtil(){
 

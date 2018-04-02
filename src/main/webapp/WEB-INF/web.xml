@@ -6,6 +6,7 @@
 
     <display-name>Archetype Created Web Application</display-name>
 
+    <!-- 字符转码 -->
     <filter>
         <filter-name>characterEncodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
