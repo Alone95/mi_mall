@@ -207,4 +207,10 @@
     where email = #{email}
     and id != #{userId}
   </select>
+
+  <select id="selectAllUser" resultMap="BaseResultMap">
+    SELECT  <include refid="Base_Column_List"/>
+    from mmall_user
+    order by id ASC
+  </select>
 </mapper>

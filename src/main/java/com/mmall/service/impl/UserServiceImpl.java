@@ -1,5 +1,7 @@
 package com.mmall.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
 import com.mmall.common.TokenCache;
@@ -11,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -197,5 +200,23 @@ public class UserServiceImpl implements IUserService{
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();
+    }
+
+    /**
+     * 显示后台用户列表
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public ServerResponse<PageInfo> list(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<User>users =userMapper.selectAllUser();
+        //遍历集合，将密码置空
+        for (User user:users){
+            user.setPassword(org.apache.commons.lang3.StringUtils.EMPTY);
+        }
+        PageInfo pageInfo = new PageInfo(users);
+        return  ServerResponse.createBySuccess(pageInfo);
     }
 }
