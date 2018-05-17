@@ -38,6 +38,8 @@ public class ProductManageController {
     @Autowired
     private IFileService iFileService;
 
+    @RequestMapping("save.do")
+    @ResponseBody
     public ServerResponse productSave(HttpServletRequest httpServletRequest, Product product){
 //        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
 //        if(StringUtils.isEmpty(loginToken)){
