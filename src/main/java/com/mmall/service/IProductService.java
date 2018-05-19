@@ -25,5 +25,7 @@ public interface IProductService {
 
     ServerResponse<PageInfo> getProductByKeywordCategory(String keyword,Integer categoryId,int pageNum,int pageSize,String orderBy);
 
+    ServerResponse<PageInfo> getRecommendProduct(Integer userId,int pageNum,int pageSize,String orderBy);
+
 
 }

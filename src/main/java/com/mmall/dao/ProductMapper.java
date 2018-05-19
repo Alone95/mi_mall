@@ -33,4 +33,7 @@ public interface ProductMapper {
 
     //查找产品销量
     Integer selectSalesVolumeByProductId(Integer id);
+
+
+    List<Product> selectRecommend(List<Integer> productIdList);
 }

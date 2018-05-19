@@ -252,7 +252,17 @@
     ORDER BY sales_volume DESC
     LIMIT #{num}
   </select>
-  
+
+  <select id="selectRecommend" resultMap="BaseResultMap" parameterType="list">
+    SELECT
+    <include refid="Base_Column_List"/>
+    from mmall_product
+    where status = 1  and id not in
+      <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+
+  </select>
 
 
 

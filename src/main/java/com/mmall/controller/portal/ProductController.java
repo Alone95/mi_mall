@@ -2,12 +2,18 @@ package com.mmall.controller.portal;
 
 import com.github.pagehelper.PageInfo;
 import com.mmall.common.ServerResponse;
+import com.mmall.pojo.User;
 import com.mmall.service.IProductService;
+import com.mmall.util.CookieUtil;
+import com.mmall.util.JsonUtil;
+import com.mmall.util.RedisShardedPoolUtil;
 import com.mmall.vo.ProductDetailVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author alone95
@@ -34,11 +40,22 @@ public class ProductController {
 
     @RequestMapping("list.do")
     @ResponseBody
-    public ServerResponse<PageInfo> list(@RequestParam(value = "keyword",required = false)String keyword,
+    public ServerResponse<PageInfo> list(HttpServletRequest httpServletRequest,
+                                         @RequestParam(value = "keyword",required = false)String keyword,
                                          @RequestParam(value = "categoryId",required = false)Integer categoryId,
                                          @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
                                          @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
                                          @RequestParam(value = "orderBy",defaultValue = "") String orderBy){
+
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User currentUser = JsonUtil.string2Obj(userJsonStr,User.class);
+        if("推荐商品".equals(keyword)){
+            return iProductService.getRecommendProduct(currentUser.getId(),pageNum,pageSize,orderBy);
+        }
         return iProductService.getProductByKeywordCategory(keyword,categoryId,pageNum,pageSize,orderBy);
     }
     //http://www.happymmall.com/product/手机/100012/1/10/price_asc

@@ -7,6 +7,7 @@ import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.dao.CategoryMapper;
+import com.mmall.dao.OrderItemMapper;
 import com.mmall.dao.ProductMapper;
 import com.mmall.pojo.Category;
 import com.mmall.pojo.Product;
@@ -30,6 +31,8 @@ import java.util.List;
 @Service("iProductService")
 public class ProductServiceImpl implements IProductService {
 
+    @Autowired
+    private OrderItemMapper orderItemMapper;
     @Autowired
     private ProductMapper productMapper;
     @Autowired
@@ -286,6 +289,34 @@ public class ProductServiceImpl implements IProductService {
             productListVoList.add(productListVo);
         }
 
+        PageInfo pageInfo = new PageInfo(productList);
+        pageInfo.setList(productListVoList);
+        return ServerResponse.createBySuccess(pageInfo);
+    }
+
+    @Override
+    public ServerResponse<PageInfo> getRecommendProduct(Integer userId, int pageNum, int pageSize, String orderBy) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<Integer>  productIdList = orderItemMapper.selectProductIdByUserId(userId);
+
+        //排序处理
+        if(StringUtils.isNotBlank(orderBy)){
+            if(Const.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)){
+                String[] orderByArray = orderBy.split("_");
+                PageHelper.orderBy(orderByArray[0]+" "+orderByArray[1]);
+            }
+            else if(Const.ProductListOrderBy.SALES_ASC_DESC.contains(orderBy)){
+                String[] orderByArray = orderBy.split("_");
+                PageHelper.orderBy(orderByArray[0]+"_"+orderByArray[1]+" "+orderByArray[2]);
+            }
+        }
+
+        List<Product> productList =productMapper.selectRecommend(productIdList);
+        List<ProductListVo> productListVoList = Lists.newArrayList();
+        for(Product product : productList){
+            ProductListVo productListVo = assembleProductListVo(product);
+            productListVoList.add(productListVo);
+        }
         PageInfo pageInfo = new PageInfo(productList);
         pageInfo.setList(productListVoList);
         return ServerResponse.createBySuccess(pageInfo);
