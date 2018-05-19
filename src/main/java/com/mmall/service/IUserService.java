@@ -30,6 +30,8 @@ public interface IUserService {
 
     ServerResponse checkAdminRole(User user);
 
+    ServerResponse userViewHistory(Integer userId, Integer productId);
+
     ServerResponse<PageInfo>list(int pageNum,int pageSize);
 
 }

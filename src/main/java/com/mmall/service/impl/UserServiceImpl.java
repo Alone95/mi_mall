@@ -4,8 +4,12 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
+import com.mmall.dao.ProductMapper;
+import com.mmall.dao.UserHistoryMapper;
 import com.mmall.dao.UserMapper;
+import com.mmall.pojo.Product;
 import com.mmall.pojo.User;
+import com.mmall.pojo.UserHistory;
 import com.mmall.service.IUserService;
 import com.mmall.util.MD5Util;
 import com.mmall.util.RedisShardedPoolUtil;
@@ -25,6 +29,10 @@ public class UserServiceImpl implements IUserService{
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private ProductMapper productMapper;
+    @Autowired
+    private UserHistoryMapper userHistoryMapper;
 
     @Override
     public ServerResponse<User> login(String username, String password) {
@@ -200,6 +208,36 @@ public class UserServiceImpl implements IUserService{
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();
+    }
+
+    @Override
+    public ServerResponse userViewHistory(Integer userId, Integer productId) {
+        if (productId==null){
+            return ServerResponse.createByErrorMessage("productId不能为空");
+        }
+        Product product = productMapper.selectByPrimaryKey(productId);
+        if (product == null) {
+            return ServerResponse.createByErrorMessage("没有找到与" + productId + "相关的商品");
+        }
+
+        //先查找该用户是否浏览过该商品，如果有记录，就在这条数据上加一，如果没有，就创建一条数据
+        UserHistory userHistory = userHistoryMapper.selectUserViewHistoryByUserIdProductId(userId, productId);
+        if (userHistory == null) {
+            //没有这条记录，新建一条数据
+            userHistory = new UserHistory();
+            userHistory.setUserId(userId);
+            userHistory.setCategoryId(product.getCategoryId());
+            userHistory.setProductId(productId);
+            userHistory.setQuantity(1);
+            userHistoryMapper.insertSelective(userHistory);
+        } else {
+            //有这条数据，浏览记录加一
+            userHistory.setQuantity(userHistory.getQuantity() + 1);
+            userHistoryMapper.updateByPrimaryKeySelective(userHistory);
+
+        }
+        return ServerResponse.createBySuccessMessage("用户浏览记录插入成功");
+
     }
 
     /**

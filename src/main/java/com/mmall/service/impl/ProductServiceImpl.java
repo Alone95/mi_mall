@@ -272,6 +272,10 @@ public class ProductServiceImpl implements IProductService {
                 String[] orderByArray = orderBy.split("_");
                 PageHelper.orderBy(orderByArray[0]+" "+orderByArray[1]);
             }
+            else if(Const.ProductListOrderBy.SALES_ASC_DESC.contains(orderBy)){
+                String[] orderByArray = orderBy.split("_");
+                PageHelper.orderBy(orderByArray[0]+"_"+orderByArray[1]+" "+orderByArray[2]);
+            }
         }
 
         List<Product> productList = productMapper.selectByNameAndCategoryIds(StringUtils.isBlank(keyword)?null:keyword,categoryIdList.size()==0?null:categoryIdList);
