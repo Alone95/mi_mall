@@ -104,8 +104,9 @@ public class OrderServiceImpl implements IOrderService {
         //mybatis 批量插入
         orderItemMapper.batchInsert(orderItemList);
 
-        //生成成功,我们要减少我们产品的库存
+        //生成成功,我们要减少我们产品的库存,增加产品的销量
         this.reduceProductStock(orderItemList);
+
         //清空一下购物车
         this.cleanCart(cartList);
 
@@ -189,9 +190,13 @@ public class OrderServiceImpl implements IOrderService {
         for(OrderItem orderItem : orderItemList){
             Product product = productMapper.selectByPrimaryKey(orderItem.getProductId());
             product.setStock(product.getStock()-orderItem.getQuantity());
+            product.setSalesVolume(product.getSalesVolume()+orderItem.getQuantity());
             productMapper.updateByPrimaryKeySelective(product);
+
         }
     }
+
+
 
     private Order assembleOrder(Integer userId,Integer shippingId,BigDecimal payment){
         Order order = new Order();
@@ -601,6 +606,7 @@ public class OrderServiceImpl implements IOrderService {
 
                 //一定要用主键where条件，防止锁表。同时必须是支持MySQL的InnoDB。
                 Integer stock = productMapper.selectStockByProductId(orderItem.getProductId());
+                Integer sales = productMapper.selectSalesVolumeByProductId(orderItem.getProductId());
 
                 //考虑到已生成的订单里的商品，被删除的情况
                 if(stock == null){
@@ -609,6 +615,7 @@ public class OrderServiceImpl implements IOrderService {
                 Product product = new Product();
                 product.setId(orderItem.getProductId());
                 product.setStock(stock+orderItem.getQuantity());
+                product.setSalesVolume(sales-orderItem.getQuantity());
                 productMapper.updateByPrimaryKeySelective(product);
             }
             orderMapper.closeOrderByOrderId(order.getId());

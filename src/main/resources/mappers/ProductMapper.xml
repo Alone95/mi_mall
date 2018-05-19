@@ -235,6 +235,16 @@
 
   </select>
 
+
+  <select id="selectSalesVolumeByProductId" resultType="int" parameterType="java.lang.Integer">
+    select
+    sales_volume
+    from mmall_product
+    where id = #{id}
+    for update
+
+  </select>
+
   <select id="selectIdByCategoryId" resultMap="BaseResultMap" parameterType="int">
     SELECT <include refid="Base_Column_List"/>
     FROM mmall_product
@@ -242,6 +252,8 @@
     ORDER BY sales_volume DESC
     LIMIT #{num}
   </select>
+  
+
 
 
 </mapper>
