@@ -261,8 +261,12 @@
       <foreach collection="productIdList" item="item" index="index" open="(" separator="," close=")">
         #{item}
       </foreach>
-    <if test="orderby !=null">
+    <if test="orderby !=null and orderby !=''.toString() ">
         order by ${orderby}
+    limit 10
+    </if>
+    <if test="orderby ==''.toString() or orderby == null ">
+        order by id
     limit 10
     </if>
 

@@ -35,5 +35,5 @@ public interface ProductMapper {
     Integer selectSalesVolumeByProductId(Integer id);
 
 
-    List<Product> selectRecommend(@Param(value = "productIdList") List<Integer> productIdList,@Param(value="orderby")StringBuffer orderby);
+    List<Product> selectRecommend(@Param(value = "productIdList") List<Integer> productIdList,@Param(value="orderby")String orderby);
 }

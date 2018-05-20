@@ -316,8 +316,8 @@ public class ProductServiceImpl implements IProductService {
             }
         }
 
-
-        List<Product> productList =productMapper.selectRecommend(productIdList,sb);
+        String orderby = sb.toString();
+        List<Product> productList =productMapper.selectRecommend(productIdList,orderby);
         List<ProductListVo> productListVoList = Lists.newArrayList();
         for(Product product : productList){
             ProductListVo productListVo = assembleProductListVo(product);
