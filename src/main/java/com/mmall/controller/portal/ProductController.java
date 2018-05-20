@@ -53,9 +53,16 @@ public class ProductController {
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User currentUser = JsonUtil.string2Obj(userJsonStr,User.class);
-        if("推荐商品".equals(keyword)){
-            return iProductService.getRecommendProduct(currentUser.getId(),pageNum,pageSize,orderBy);
+        if("推荐商品".equals(keyword)) {
+            if (currentUser !=null) {
+                return iProductService.getRecommendProduct(currentUser.getId(), pageNum, pageSize, orderBy);
+            }
+            else{
+                return iProductService.getRecommend(pageNum,pageSize,orderBy);
+            }
         }
+
+
         return iProductService.getProductByKeywordCategory(keyword,categoryId,pageNum,pageSize,orderBy);
     }
     //http://www.happymmall.com/product/手机/100012/1/10/price_asc

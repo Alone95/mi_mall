@@ -272,6 +272,13 @@
 
   </select>
 
+  
+  <select id="selectRecommendGroupByCategoryId" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    from mmall_product
+    GROUP BY category_id
+    
+  </select>
 
 
 </mapper>

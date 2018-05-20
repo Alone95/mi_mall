@@ -36,4 +36,6 @@ public interface ProductMapper {
 
 
     List<Product> selectRecommend(@Param(value = "productIdList") List<Integer> productIdList,@Param(value="orderby")String orderby);
+
+    List<Product> selectRecommendGroupByCategoryId();
 }

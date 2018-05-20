@@ -27,5 +27,7 @@ public interface IProductService {
 
     ServerResponse<PageInfo> getRecommendProduct(Integer userId,int pageNum,int pageSize,String orderBy);
 
+    ServerResponse<PageInfo> getRecommend(int pageNum,int pageSize,String orderBy);
+
 
 }
