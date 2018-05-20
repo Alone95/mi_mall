@@ -253,15 +253,19 @@
     LIMIT #{num}
   </select>
 
-  <select id="selectRecommend" resultMap="BaseResultMap" parameterType="list">
+  <select id="selectRecommend" resultMap="BaseResultMap" parameterType="map">
     SELECT
     <include refid="Base_Column_List"/>
     from mmall_product
     where status = 1  and id not in
-      <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+      <foreach collection="productIdList" item="item" index="index" open="(" separator="," close=")">
         #{item}
       </foreach>
-      LIMIT 10
+    <if test="orderby !=null">
+        order by ${orderby}
+    limit 10
+    </if>
+
   </select>
 
 

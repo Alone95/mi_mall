@@ -299,19 +299,25 @@ public class ProductServiceImpl implements IProductService {
         PageHelper.startPage(pageNum,pageSize);
         List<Integer>  productIdList = orderItemMapper.selectProductIdByUserId(userId);
 
+        StringBuffer sb =new StringBuffer();
+
         //排序处理
         if(StringUtils.isNotBlank(orderBy)){
             if(Const.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)){
                 String[] orderByArray = orderBy.split("_");
-                PageHelper.orderBy(orderByArray[0]+" "+orderByArray[1]);
+                //PageHelper.orderBy(orderByArray[0]+" "+orderByArray[1]);
+                sb.append(orderByArray[0]).append(" ").append(orderByArray[1]);
             }
             else if(Const.ProductListOrderBy.SALES_ASC_DESC.contains(orderBy)){
                 String[] orderByArray = orderBy.split("_");
-                PageHelper.orderBy(orderByArray[0]+"_"+orderByArray[1]+" "+orderByArray[2]);
+                //PageHelper.orderBy(orderByArray[0]+"_"+orderByArray[1]+" "+orderByArray[2]);
+                sb.append(orderByArray[0]).append("_").append(orderByArray[1]).append(" ")
+                        .append(orderByArray[2]);
             }
         }
 
-        List<Product> productList =productMapper.selectRecommend(productIdList);
+
+        List<Product> productList =productMapper.selectRecommend(productIdList,sb);
         List<ProductListVo> productListVoList = Lists.newArrayList();
         for(Product product : productList){
             ProductListVo productListVo = assembleProductListVo(product);
