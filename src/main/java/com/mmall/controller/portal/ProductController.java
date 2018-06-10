@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 import com.mmall.service.IProductService;
+import com.mmall.service.IUserService;
 import com.mmall.util.CookieUtil;
 import com.mmall.util.JsonUtil;
 import com.mmall.util.RedisShardedPoolUtil;
@@ -24,10 +25,19 @@ import javax.servlet.http.HttpServletRequest;
 public class ProductController {
     @Autowired
     private IProductService iProductService;
+    @Autowired
+    private IUserService iUserService;
 
     @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse<ProductDetailVo> detail(Integer productId){
+    public ServerResponse<ProductDetailVo> detail(HttpServletRequest httpServletRequest,Integer productId){
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User currentUser = JsonUtil.string2Obj(userJsonStr,User.class);
+        iUserService.userViewHistory(currentUser.getId(),productId);
         return iProductService.getProductDetail(productId);
     }
 
