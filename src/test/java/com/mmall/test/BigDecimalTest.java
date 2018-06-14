@@ -21,12 +21,6 @@ public class BigDecimalTest {
         System.out.println(123.3/100);
     }
 
-
-
-
-
-
-
     @Test
     public void test2(){
         BigDecimal b1 = new BigDecimal(0.05);

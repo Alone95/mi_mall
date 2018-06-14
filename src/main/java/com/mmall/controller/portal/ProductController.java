@@ -37,7 +37,9 @@ public class ProductController {
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User currentUser = JsonUtil.string2Obj(userJsonStr,User.class);
-        iUserService.userViewHistory(currentUser.getId(),productId);
+        if(currentUser!=null) {
+            iUserService.userViewHistory(currentUser.getId(), productId);
+        }
         return iProductService.getProductDetail(productId);
     }
 
